@@ -1,3 +1,5 @@
+import uuid
+import datetime
 from database import Database
 
 __author__ = "technokowski"
@@ -10,13 +12,13 @@ the collections db using the insert method contained in Database.py. Pretty simp
 
 class Post(object):
 
-    def __init__(self, blog_id, title, content, author, date, id):
+    def __init__(self, blog_id, title, content, author, date=datetime.datetime.utcnow(), id=None):
         self.blog_id = blog_id
         self.title = title
         self.content = content
         self.author = author
         self.created_date = date
-        self.id = id
+        self.id = uuid.uuid4().hex if id is None else id
 
     def save_to_mongo(self):
         Database.insert(collection='posts',
@@ -34,7 +36,7 @@ class Post(object):
     @staticmethod
     def from_mongo(id):
         # Post.from_mongo('123')
-        return Database.find_one(collection='post', query={'id': id})
+        return Database.find_one(collection='posts', query={'id': id})
 
     @staticmethod
     def from_blog(id):
